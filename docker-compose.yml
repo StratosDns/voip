@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  pbx_a:
+    build:
+      context: .
+      dockerfile: Dockerfile.pbx
+    container_name: pbx_a
+    command: >
+      python pbx_server.py
+      --host 0.0.0.0
+      --port 5000
+      --mode A
+      --prefix 5
+      --remote-prefix 7
+      --ivr-ext 5000
+      --trunk-remote-host pbx_b
+      --trunk-remote-port 6001
+      --trunk-listen-port 6000
+    ports:
+      - "5000:5000"   # endpointsA
+      - "6000:6000"   # trunk listen από B
+    networks:
+      - voipnet
+
+  pbx_b:
+    build:
+      context: .
+      dockerfile: Dockerfile.pbx
+    container_name: pbx_b
+    command: >
+      python pbx_server.py
+      --host 0.0.0.0
+      --port 5001
+      --mode B
+      --prefix 7
+      --remote-prefix 5
+      --ivr-ext 7000
+      --trunk-remote-host pbx_a
+      --trunk-remote-port 6000
+      --trunk-listen-port 6001
+    ports:
+      - "5001:5001"   # endpointsB
+      - "6001:6001"   # trunk listen από A
+    networks:
+      - voipnet
+
+networks:
+  voipnet:
+    driver: bridge

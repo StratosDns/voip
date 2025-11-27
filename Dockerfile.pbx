@@ -1,0 +1,11 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Αντιγράφουμε μόνο τον server (ο client τρέχει από το host)
+COPY pbx_server.py /app/
+
+# Γισ την περίπτωση που χρειαστούν επιπλέον πακέτα, ξεσχολιάστε την παρακάτω γραμμή και προσθέστε τα απαιτούμενα πακέτα στο requirements.txt
+# RUN pip install -r requirements.txt
+
+CMD ["python", "pbx_server.py"]
